@@ -1,13 +1,11 @@
 import os
-import json
+
 import pandas as pd
-import pandas_ta as ta
-import telebot
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
-from fastapi.exceptions import HTTPException
+
 from pybit.unified_trading import HTTP
 
+load_dotenv()
 bybit_api_key = os.getenv('BYBIT_API_KEY')
 bybit_api_secret = os.getenv('BYBIT_API_SECRET')
 
