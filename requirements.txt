@@ -1,0 +1,4 @@
+pandas-ta
+pybit
+pandas
+python-dotenv
