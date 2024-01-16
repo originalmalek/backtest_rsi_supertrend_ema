@@ -43,7 +43,7 @@ def create_signal_df(df):
 					and df[f'SUPERTd_{supertrend_high_length}_{supertrend_high_multiplier}'][index + 1] == 1 \
 					and df[f'RSI_{rsi_length}'][index + 1] > rsi_value_buy \
 					and df[f'EMA_{ema_length}'][index + 1] < entry_price:
-				stop_loss_price = df['Low'][index]
+				stop_loss_price = df[f'Low'][index]
 				trade_position = 'buy'
 				take_profit_price = entry_price + (entry_price - stop_loss_price) * sl_tp_ratio
 				tp_sl_rate = abs(1 - stop_loss_price / take_profit_price)
@@ -67,6 +67,7 @@ def create_signal_df(df):
 				                                 'TP_SL_rate': tp_sl_rate},
 				                                ignore_index=True
 				                                )
+
 	return signals_df
 
 
@@ -114,11 +115,8 @@ def calculate_statistic(df, signals_df):
 				                               'TP_SL_RATE': tp_sl_rate},
 				                              ignore_index=True)
 				break
-
-	print(singlal_df_len, count_tp_deals, round(count_tp_deals / singlal_df_len, 3), timeframe, sl_tp_ratio, ema_length,
-	      rsi_length, rsi_value_sell, rsi_value_buy, supertrend_low_length, supertrend_low_multiplier,
-	      supertrend_high_length, supertrend_high_multiplier)
-
+	print(round(count_tp_deals / singlal_df_len, 3), timeframe, sl_tp_ratio, ema_length, rsi_length, rsi_value_sell, rsi_value_buy,
+	      supertrend_low_length, supertrend_low_multiplier, supertrend_high_length, supertrend_high_multiplier)
 	return trades_df
 
 
@@ -127,32 +125,25 @@ def main():
 
 	signals_df = create_signal_df(df)
 	trades_df = calculate_statistic(df, signals_df)
-	# trades_df.to_csv(f'{pair}_trades_{timeframe}.csv')
+	trades_df.to_csv(f'{pair}_trades_{timeframe}.csv')
 
 
 if __name__ == '__main__':
-	rsi_values = [x * 10 for x in range(1 ,10)]
-	rsi_lengths = [x for x in range(1, 30)]
+	timeframe = 240
+	sl_tp_ratio = 3
 
-	supertrend_low_lengths = [x for x in range(1, 11)]
-	supertrend_low_multipliers = [round(x * 0.1, 1) for x in range(1, 21)]
+	ema_length = 200
 
-	supertrend_high_lengths = [x for x in range(1, 11)]
-	supertrend_high_multipliers = [float(x) for x in range(1, 11)]
+	rsi_length = 14
+	rsi_value_sell = 40
+	rsi_value_buy = 60
 
-	sl_tp_ratios = [x * 0.5 for x in range(2, 21)]
-	ema_lengths = [20, 50, 200]
+	supertrend_low_length = 2
+	supertrend_low_multiplier = 0.5
 
-	timeframe = 60
+	supertrend_high_length = 7
+	supertrend_high_multiplier = 7.0
+
 	pair = 'BTCUSDT'
 
-	for ema_length in ema_lengths:
-		for rsi_length in rsi_lengths:
-			for rsi_value_sell in rsi_values:
-				for rsi_value_buy in rsi_values:
-					for supertrend_low_length in supertrend_low_lengths:
-						for supertrend_low_multiplier in supertrend_low_multipliers:
-							for supertrend_high_length in supertrend_high_lengths:
-								for supertrend_high_multiplier in supertrend_high_multipliers:
-									for sl_tp_ratio in sl_tp_ratios:
-										main()
+	main()
